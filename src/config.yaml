@@ -12,11 +12,33 @@ options:
       Whether to use a multipath connection for iSCSI or FC in Cinder
       volume service. Enabling multipath for VMs is managed by the
       "use-multipath" option in the nova-compute charm.
-  protocol:
+  storage-protocol:
     type: string
     default:
     description: |
-      SAN protocol to use. Choose between iscsi or fc.
+      SAN protocol to use. Choose between iSCSI or FC.
+  san-ip:
+    type: string
+    default:
+    description: |
+      IP address of SAN controller.
+  san-login:
+    type: string
+    default:
+    description: |
+      Username for SAN controller.
+  san-password:
+    type: string
+    default:
+    description: |
+      Password for SAN controller. SSH key pair authentication is not
+      supported by the charm at this moment.
+  unity-io-ports:
+    type: string
+    default:
+    description: |
+      A comma-separated list of iSCSI or FC ports to be used. 
+      Each port can be Unix-style glob expressions.
   driver-source:
     type: string
     default:

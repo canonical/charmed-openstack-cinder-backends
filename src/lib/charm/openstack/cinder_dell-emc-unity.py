@@ -27,7 +27,7 @@ class CinderDellEMCUnityCharm(
     release = "ussuri"
 
     # List of packages to install
-    packages = ["python3-storops"]
+    packages = ["python3-storops", "sg3-utils"]
 
     # make sure multipath related packages are installed
     packages.extend(MULTIPATH_PACKAGES)
@@ -39,7 +39,13 @@ class CinderDellEMCUnityCharm(
     active_active_ha = False
 
     # Specify any config that the user *must* set.
-    mandatory_config = ["protocol"]
+    mandatory_config = [
+        "storage-protocol",
+        "san-ip",
+        "san-login",
+        "san-password",
+        "unity-io-ports",
+    ]
 
     def cinder_configuration(self):
         mandatory_config_values = map(self.config.get, self.mandatory_config)
@@ -51,12 +57,16 @@ class CinderDellEMCUnityCharm(
         else:
             volume_backend_name = ch_hookenv.service_name()
 
-        volume_driver = ""
+        volume_driver = "cinder.volume.drivers.dell_emc.unity.Driver"
 
         driver_options = [
             ("volume_backend_name", volume_backend_name),
             ("volume_driver", volume_driver),
-            # Add config options that needs setting on cinder.conf
+            ("storage_protocol", self.config.get("storage-protocol")),
+            ("san_ip", self.config.get("san-ip")),
+            ("san_login", self.config.get("san-login")),
+            ("san_password", self.config.get("san-password")),
+            ("unity_io_ports", self.config.get("unity-io-ports")),
         ]
 
         if self.config.get("use-multipath"):
