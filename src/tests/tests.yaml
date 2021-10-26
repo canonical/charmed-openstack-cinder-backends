@@ -1,0 +1,9 @@
+charm_name: cinder-dell-emc-unity
+tests:
+  - tests.tests_cinder_dell_emc_unity.CinderDellEMCUnityTest
+configure:
+  - zaza.openstack.charm_tests.keystone.setup.add_demo_user
+gate_bundles:
+  - xenial-ussuri
+smoke_bundles:
+  - xenial-ussuri
