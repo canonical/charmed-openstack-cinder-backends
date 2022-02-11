@@ -4,7 +4,6 @@ import charmhelpers.core.hookenv as ch_hookenv  # noqa
 charms_openstack.charm.use_defaults("charm.default-select-release")
 
 
-
 class CinderDellEMCPowerstoreCharm(
     charms_openstack.charm.CinderStoragePluginCharm
 ):
@@ -47,7 +46,8 @@ class CinderDellEMCPowerstoreCharm(
         else:
             volume_backend_name = ch_hookenv.service_name()
 
-        volume_driver = "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver"
+        volume_driver = \
+            "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver"
 
         driver_options = [
             ("volume_backend_name", volume_backend_name),

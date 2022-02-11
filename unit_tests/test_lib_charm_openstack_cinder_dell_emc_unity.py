@@ -70,7 +70,8 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
                 ("san_ip", "192.0.2.1"),
                 ("san_login", "superuser"),
                 ("san_password", "my-password"),
-                ("powerstore_ports", "spa_iom_0_fc0,spb_iom_0_fc0,*_iom_0_fc1"),
+                ("powerstore_ports",
+                 "spa_iom_0_fc0,spb_iom_0_fc0,*_iom_0_fc1"),
             ],
         )
 
@@ -110,7 +111,8 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
                 ("volume_backend_name", "cinder-myapp-name"),
                 (
                     "volume_driver",
-                    "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver"
+                    "cinder.volume.drivers.dell_emc."
+                    "powerstore.driver.PowerStoreDriver"
                 ),
                 ("storage_protocol", "iSCSI"),
                 ("san_ip", "192.0.2.1"),
@@ -119,5 +121,3 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
                 ("powerstore_ports", "spa_eth2,spb_eth2,*_eth3"),
             ],
         )
-
-
