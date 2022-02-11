@@ -26,7 +26,7 @@ options:
     description: |
       Password for SAN controller. SSH key pair authentication is not
       supported by the charm at this moment.
-  powerstore_ports:
+  powerstore-ports:
     type: string
     default:
     description: |

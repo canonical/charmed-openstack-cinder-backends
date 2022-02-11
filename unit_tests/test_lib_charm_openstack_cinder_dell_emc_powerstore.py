@@ -39,12 +39,6 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
         charm = self._patch_config_and_charm({})
         self.assertEqual(charm.name, "cinder_dell_emc_powerstore")
         self.assertEqual(charm.version_package, "python3-storops")
-        self.assertEqual(charm.packages, [
-            "python3-storops",
-            "sg3-utils",
-            "multipath-tools",
-            "sysfsutils"
-        ])
 
     def test_cinder_configuration(self):
         charm = self._patch_config_and_charm(
@@ -54,7 +48,7 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
                 "san-ip": "192.0.2.1",
                 "san-login": "superuser",
                 "san-password": "my-password",
-                "powerstore_ports": "spa_iom_0_fc0,spb_iom_0_fc0,*_iom_0_fc1",
+                "powerstore-ports": "spa_iom_0_fc0,spb_iom_0_fc0,*_iom_0_fc1",
             }
         )
         config = charm.cinder_configuration()
@@ -64,7 +58,8 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
                 ("volume_backend_name", "my_backend_name"),
                 (
                     "volume_driver",
-                    "cinder.volume.drivers.dell_emc.powerstore.Driver"
+                    "cinder.volume.drivers.dell_emc."
+                    "powerstore.driver.PowerStoreDriver"
                 ),
                 ("storage_protocol", "FC"),
                 ("san_ip", "192.0.2.1"),
@@ -111,8 +106,8 @@ class TestCinderDellEMCPowerstoreCharm(test_utils.PatchHelper):
                 ("volume_backend_name", "cinder-myapp-name"),
                 (
                     "volume_driver",
-                    "cinder.volume.drivers.dell_emc."
-                    "powerstore.driver.PowerStoreDriver"
+                    "cinder.volume.drivers.dell_emc.powerstore."
+                    "driver.PowerStoreDriver"
                 ),
                 ("storage_protocol", "iSCSI"),
                 ("san_ip", "192.0.2.1"),
