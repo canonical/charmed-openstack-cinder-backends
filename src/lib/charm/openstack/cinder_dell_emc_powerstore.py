@@ -3,18 +3,14 @@ import charmhelpers.core.hookenv as ch_hookenv  # noqa
 
 charms_openstack.charm.use_defaults("charm.default-select-release")
 
-MULTIPATH_PACKAGES = [
-    "multipath-tools",  # installed by default for disco+
-    "sysfsutils",  # LP: #1947063
-]
 
 
-class CinderDellEMCUnityCharm(
+class CinderDellEMCPowerstoreCharm(
     charms_openstack.charm.CinderStoragePluginCharm
 ):
 
     # The name of the charm
-    name = "cinder_dell_emc_unity"
+    name = "cinder_dell_emc_powerstore"
 
     # Package to determine application version. Use "cinder-common" when
     # the driver is in-tree of Cinder upstream.
@@ -24,13 +20,7 @@ class CinderDellEMCUnityCharm(
     release_pkg = "cinder-common"
 
     # this is the first release in which this charm works
-    release = "ussuri"
-
-    # List of packages to install
-    packages = ["python3-storops", "sg3-utils"]
-
-    # make sure multipath related packages are installed
-    packages.extend(MULTIPATH_PACKAGES)
+    release = "victoria"
 
     stateless = True
 
@@ -44,7 +34,7 @@ class CinderDellEMCUnityCharm(
         "san-ip",
         "san-login",
         "san-password",
-        "unity-io-ports",
+        "powerstore-ports",
     ]
 
     def cinder_configuration(self):
@@ -57,7 +47,7 @@ class CinderDellEMCUnityCharm(
         else:
             volume_backend_name = ch_hookenv.service_name()
 
-        volume_driver = "cinder.volume.drivers.dell_emc.unity.Driver"
+        volume_driver = "cinder.volume.drivers.dell_emc.powerstore.driver.PowerStoreDriver"
 
         driver_options = [
             ("volume_backend_name", volume_backend_name),
@@ -66,7 +56,7 @@ class CinderDellEMCUnityCharm(
             ("san_ip", self.config.get("san-ip")),
             ("san_login", self.config.get("san-login")),
             ("san_password", self.config.get("san-password")),
-            ("unity_io_ports", self.config.get("unity-io-ports")),
+            ("powerstore_ports", self.config.get("powerstore-ports")),
         ]
 
         if self.config.get("use-multipath"):

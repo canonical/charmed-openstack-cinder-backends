@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Encapsulate cinder-dell-emc-unity testing."""
+"""Encapsulate cinder-dell-emc-powerstore testing."""
 
 import logging
 import uuid
@@ -24,22 +24,22 @@ import zaza.openstack.charm_tests.test_utils as test_utils
 import zaza.openstack.utilities.openstack as openstack_utils
 
 
-class CinderDellEMCUnityTest(test_utils.OpenStackBaseTest):
-    """Encapsulate DellEMCUnity tests."""
+class CinderDellEMCPowerstoreTest(test_utils.OpenStackBaseTest):
+    """Encapsulate DellEMCPowerstore tests."""
 
     @classmethod
     def setUpClass(cls):
         """Run class setup for running tests."""
-        super(CinderDellEMCUnityTest, cls).setUpClass()
+        super(CinderDellEMCPowerstoreTest, cls).setUpClass()
         cls.keystone_session = openstack_utils.get_overcloud_keystone_session()
         cls.model_name = zaza.model.get_juju_model()
         cls.cinder_client = openstack_utils.get_cinder_session_client(
             cls.keystone_session)
 
     def test_cinder_config(self):
-        logging.info('dell-emc-unity')
+        logging.info('dell-emc-powerstore')
         expected_contents = {
-            'cinder-dell-emc-unity': {
+            'cinder-dell-emc-powerstore': {
                 'iscsi_helper': ['tgtadm'],
                 'volume_dd_blocksize': ['512']}}
 
@@ -66,5 +66,5 @@ class CinderDellEMCUnityTest(test_utils.OpenStackBaseTest):
         test_vol = self.cinder_client.volumes.find(name=test_vol_name)
         self.assertEqual(
             getattr(test_vol, 'os-vol-host-attr:host').split('#')[0],
-            'cinder@cinder-dell-emc-unity')
+            'cinder@cinder-dell-emc-powerstore')
         self.cinder_client.volumes.delete(vol_new)

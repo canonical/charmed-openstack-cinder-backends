@@ -5,13 +5,6 @@ options:
     description: |
       Volume backend name for the backend. The default value is the
       application name in the Juju model.
-  use-multipath:
-    type: boolean
-    default: True
-    description: |
-      Whether to use a multipath connection for iSCSI or FC in Cinder
-      volume service. Enabling multipath for VMs is managed by the
-      "use-multipath" option in the nova-compute charm.
   storage-protocol:
     type: string
     default:
@@ -33,7 +26,7 @@ options:
     description: |
       Password for SAN controller. SSH key pair authentication is not
       supported by the charm at this moment.
-  unity-io-ports:
+  powerstore_ports:
     type: string
     default:
     description: |

@@ -1,17 +1,17 @@
-Dell EMC Unity Storage Backend for Cinder
+Dell EMC Powerstore Storage Backend for Cinder
 -------------------------------
 
 Overview
 ========
 
-This charm provides a Dell EMC Unity storage backend for use with the Cinder
+This charm provides a Dell EMC Powerstore storage backend for use with the Cinder
 charm.
 
 To use:
 
     juju deploy cinder
-    juju deploy cinder-dell-emc-unity
-    juju add-relation cinder-dell-emc-unity cinder
+    juju deploy cinder-dell-emc-powerstore
+    juju add-relation cinder-dell-emc-powerstore cinder
 
 Configuration
 =============

@@ -1,10 +1,10 @@
-name: cinder-dell-emc-unity
-summary: Dell EMC Unity integration for OpenStack Block Storage
+name: cinder-dell-emc-powerstore
+summary: Dell EMC Powerstore integration for OpenStack Block Storage
 maintainer: OpenStack Charmers <openstack-charmers@lists.ubuntu.com>
 description: |
  Cinder is the block storage service for the Openstack project.
  .
- This charm provides a Dell EMC Unity backend for Cinder
+ This charm provides a Dell EMC Powerstore backend for Cinder
 tags:
   - openstack
   - storage
