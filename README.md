@@ -1,10 +1,10 @@
-Dell EMC Powerstore Storage Backend for Cinder
+Dell EMC PowerStore Storage Backend for Cinder
 -------------------------------
 
 Overview
 ========
 
-This charm provides a Dell EMC Powerstore storage backend for use with the Cinder
+This charm provides a Dell EMC PowerStore storage backend for use with the Cinder
 charm.
 
 To use:
