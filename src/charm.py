@@ -29,6 +29,7 @@ class CinderDellEMCPowerStoreCharm(CinderStoragePluginCharm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._stored.is_started = True
 
     def cinder_configuration(self, config):
         # Return the configuration to be set by the principal.
