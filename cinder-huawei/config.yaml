@@ -1,0 +1,103 @@
+options:
+  use-multipath:
+    type: boolean
+    default: True
+    description: |
+      Whether to use a multipath connection for iSCSI or FC in Cinder
+      volume service. Enabling multipath for VMs is managed by the
+      "use-multipath" option in the nova-compute charm.
+  protocol:
+    type: string
+    default: iscsi
+    description: |
+      SAN protocol to use. Choose between iscsi or fc.
+  volume-backend-name:
+    type: string
+    description: |
+        Volume backend name for the backend. The default value is the
+        application name in the Juju model, e.g. "cinder-mybackend"
+        if it's deployed as `juju deploy cinder-huawei cinder-mybackend`.
+        A common backend name can be set to multiple backends with the
+        same characters so that those can be treated as a single virtual
+        backend associated with a single volume type.
+  product:
+    type: string
+    default:
+    description: |
+      Type of a storage product. Possible values are 'TV2', 'V3',
+      '18000', or 'Dorado'.
+  rest-url:
+    type: string
+    default:
+    description: |
+      Semicolon(;) separated list of the REST interface. e.g.,
+      https://my-endpoint.example.com:8088/deviceManager/rest/
+  username:
+    type: string
+    default:
+    description: |
+      User name of a storage administrator.
+  password:
+    type: string
+    default:
+    description: |
+      Password of a storage administrator.
+  storage-pool:
+    type: string
+    default:
+    description: |
+      Semicolon(;) separated list of storage pools to be used.
+  luntype:
+    type: string
+    default: Thin 
+    description: |
+      Type of the LUNs to be created. The value can be Thick or Thin. Dorado series 
+      only support Thin LUNs.
+  default-targetip:
+    type: string
+    default: 
+    description: |
+      Default IP address of the iSCSI target that is provided for compute nodes.
+  initiator-name:
+    type: string
+    default: ''
+    description: |
+      List of iSCSI initiators names, separated by the semicolons. Can be acquired
+      from the /etc/iscsi/initiatorname.iscsi on the compute host.
+  target-portgroup:
+    type: string
+    default:
+    description: |
+      Port Group name on the storage array side. This has to be configured
+      in order to use the iSCSI multipathing.
+  fc-hostname:
+    type: string
+    default:
+    description: |
+      List of FC initiators host names, separated by the semicolons.
+      Use regular expression for every Nova or Cinder node's host names, 
+      for example, "cinder-[0-9]" or "compute.*"
+  alua:
+    type: int
+    default: 1
+    description: |
+        0: Huawei UltraPath
+        1: third-party multipathing software
+  failover-mode:
+    type: int
+    default: 1
+    description: |
+        Initiator switchover mode.
+        This parameter needs to be delivered only when third-party multipathing software is used.
+        0: early-version ALUA
+        1: common ALUA
+        2: ALUA not used
+        3: special mode
+  path-type:
+    type: int
+    default: 0
+    description: |
+        Initiator path type.
+        This parameter needs to be delivered only when third-party multipathing software is used.
+        0: optimized path
+        1: non-optimized path
