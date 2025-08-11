@@ -3,14 +3,15 @@ name: Build
 on:
   workflow_call:
     inputs:
-        charms:
-            description: List of charms to test
-            required: true
-            type: string
-            default: '[]'
+      charms:
+        description: List of charms to build
+        required: true
+        type: string
+        default: '[]'
 
 jobs:
   build:
+    if: ${{ inputs.charms != '[]' }}
     name: Build charm
     runs-on: ubuntu-22.04
     strategy:
@@ -20,9 +21,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Setup LXD
+        uses: canonical/setup-lxd@v0.1.3
+        with:
+          channel: 5.21/stable
       - name: Install dependencies
-        run: sudo snap install charmcraft --channel 2.x/stable
+        run: sudo snap install charmcraft --channel 2.x/stable --classic
       - name: Build charm
         run: |
-          cd $charm
+          cd ${{ matrix.charm }}
           charmcraft -v pack

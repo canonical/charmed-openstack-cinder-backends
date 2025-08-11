@@ -3,13 +3,15 @@ name: Modified Charms
 on:
   workflow_call:
     outputs:
-        rocks:
+        charms:
             description: List of modified charms as a json string.
             value: ${{ jobs.modifiedcharms.outputs.charms }}
 
 jobs:
-  find_modified_dirs:
-    runs-on: ubuntu-latest
+  modifiedcharms:
+    runs-on: ubuntu-22.04
+    outputs:
+      charms: ${{ steps.changed-charms.outputs.charms }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,12 +22,12 @@ jobs:
         with:
           dir_names: true
           dir_names_max_depth: 1
+          files_ignore: .github/workflows/*.yaml
 
       - name: set output
         id: changed-charms
         run: |
-          modified_charms=${{ steps.changed_files.outputs.all_changed_files }}
+          modified_dirs=${{ steps.changed_files.outputs.all_changed_files }}
+          modified_charms=$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modified_dirs[@]}")
           echo "Modified charms: $modified_charms"
-          echo "rocks=$modified_charms" >> $GITHUB_OUTPUT
-
-
+          echo "charms=$modified_charms" >> $GITHUB_OUTPUT
