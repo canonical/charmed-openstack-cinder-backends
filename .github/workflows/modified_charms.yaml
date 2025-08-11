@@ -1,0 +1,31 @@
+name: Modified Charms
+
+on:
+  workflow_call:
+    outputs:
+        rocks:
+            description: List of modified charms as a json string.
+            value: ${{ jobs.modifiedcharms.outputs.charms }}
+
+jobs:
+  find_modified_dirs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get changed files and directories
+        id: changed_files
+        uses: tj-actions/changed-files@v46
+        with:
+          dir_names: true
+          dir_names_max_depth: 1
+
+      - name: set output
+        id: changed-charms
+        run: |
+          modified_charms=${{ steps.changed_files.outputs.all_changed_files }}
+          echo "Modified charms: $modified_charms"
+          echo "rocks=$modified_charms" >> $GITHUB_OUTPUT
+
+
