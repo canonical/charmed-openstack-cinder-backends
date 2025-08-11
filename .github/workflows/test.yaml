@@ -3,14 +3,15 @@ name: Test
 on:
   workflow_call:
     inputs:
-        charms:
-            description: List of charms to test
-            required: true
-            type: string
-            default: '[]'
+      charms:
+        description: List of charms to test
+        required: true
+        type: string
+        default: '[]'
 
 jobs:
   lint:
+    if: ${{ inputs.charms != '[]' }}
     name: Lint
     runs-on: ubuntu-22.04
     strategy:
@@ -24,10 +25,11 @@ jobs:
         run: python3 -m pip install tox
       - name: Run linters
         run: |
-          cd $charm
+          cd ${{ matrix.charm }}
           tox -e pep8
 
   unit-test:
+    if: ${{ inputs.charms != '[]' }}
     name: Unit tests
     runs-on: ubuntu-22.04
     strategy:
@@ -41,5 +43,5 @@ jobs:
         run: python3 -m pip install tox
       - name: Run tests
         run: |
-          cd $charm
+          cd ${{ matrix.charm }}
           tox -e py3

@@ -3,14 +3,15 @@ name: Release
 on:
   workflow_call:
     inputs:
-        charms:
-            description: List of charms to test
-            required: true
-            type: string
-            default: '[]'
+      charms:
+        description: List of charms to release
+        required: true
+        type: string
+        default: '[]'
 
 jobs:
   release-to-charmhub:
+    if: ${{ inputs.charms != '[]' }}
     name: Release to Charmhub
     runs-on: ubuntu-22.04
     strategy:
@@ -27,4 +28,4 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           channel: 2024.1/edge
           charmcraft-channel: 2.x/stable
-          charm-path: $charm
+          charm-path: ${{ matrix.charm }}
