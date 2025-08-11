@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+        charms:
+            description: List of charms to test
+            required: true
+            type: string
+            default: '[]'
+
+jobs:
+  release-to-charmhub:
+    name: Release to Charmhub
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        charm: ${{ fromJson(inputs.charms) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Release to CharmHub
+        uses: canonical/charming-actions/upload-charm@2.4.0
+        with:
+          credentials: "${{ secrets.CHARMHUB_TOKEN }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          channel: 2024.1/edge
+          charmcraft-channel: 2.x/stable
+          charm-path: $charm

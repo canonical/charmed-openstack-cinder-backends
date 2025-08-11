@@ -1,0 +1,22 @@
+name: Push (main)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  modified_charms:
+    uses: ./.github/workflows/modified_charms.yaml
+
+  test-charms:
+    needs: modified_charms
+    uses: ./.github/workflows/test.yaml
+    with:
+      charms: ${{ needs.modified_charms.outputs.charms }}
+
+  release-charms:
+    needs: modified_charms
+    uses: ./.github/workflows/release.yaml
+    with:
+      charms: ${{ needs.modified_charms.outputs.charms }}
