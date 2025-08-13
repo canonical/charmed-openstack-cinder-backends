@@ -28,6 +28,6 @@ jobs:
         id: changed-charms
         run: |
           modified_dirs=${{ steps.changed_files.outputs.all_changed_files }}
-          modified_charms=$(jq --compact-output --null-input '$ARGS.positional' --args -- "${modified_dirs[@]}")
+          modified_charms=$(jq --compact-output --null-input '$ARGS.positional' --args -- ${modified_dirs[@]})
           echo "Modified charms: $modified_charms"
           echo "charms=$modified_charms" >> $GITHUB_OUTPUT
