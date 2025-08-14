@@ -20,4 +20,5 @@ jobs:
     uses: ./.github/workflows/release.yaml
     with:
       charms: ${{ needs.modified_charms.outputs.charms }}
-      charmhub_token: ${{ secrets.CHARMHUB_TOKEN }}
+    secrets:
+      charmhub_token: "${{ secrets.CHARMHUB_TOKEN }}"
