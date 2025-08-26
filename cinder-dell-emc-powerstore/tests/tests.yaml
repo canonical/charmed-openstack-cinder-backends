@@ -1,0 +1,9 @@
+charm_name: cinder-dell-emc-powerstore
+tests:
+  - tests.tests.CinderDellEMCPowerStoreTest
+configure:
+  - zaza.openstack.charm_tests.keystone.setup.add_demo_user
+gate_bundles:
+  - jammy-yoga
+smoke_bundles:
+  - jammy-yoga
