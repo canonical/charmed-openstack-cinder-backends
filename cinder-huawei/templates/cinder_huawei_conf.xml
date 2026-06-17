@@ -19,7 +19,7 @@
         {% if initiator_name != '' -%}
         {% set initiators = initiator_name.split(';') %}
         {% for initiator in initiators -%}
-        <Initiator HostName="{{ initiator }}" TargetPortGroup="{{ target_portgroup }}" />
+        <Initiator Name="{{ initiator }}" TargetPortGroup="{{ target_portgroup }}" />
         {% endfor %}
         {% endif %}
     </iSCSI>
