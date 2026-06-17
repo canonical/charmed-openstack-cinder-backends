@@ -19,7 +19,7 @@
         {% if initiator_name != '' -%}
         {% set initiators = initiator_name.split(';') %}
         {% for initiator in initiators -%}
-        <Initiator Name="{{ initiator }}" TargetPortGroup="{{ target_portgroup }}" />
+        <Initiator HostName="{{ initiator }}" TargetPortGroup="{{ target_portgroup }}" />
         {% endfor %}
         {% endif %}
     </iSCSI>
@@ -29,7 +29,7 @@
         {% if fc_hostname != '' -%}
         {% set hostnames = fc_hostname.split(';') %}
         {% for hostname in hostnames -%}
-        <Initiator HostName="{{ hostname }}" ALUA="{{ alua }}" FAILOVERMODE="{{ failovermode }}" PATHTYPE="{{ pathtype }}"/>
+        <Initiator Name="{{ hostname }}" ALUA="{{ alua }}" FAILOVERMODE="{{ failovermode }}" PATHTYPE="{{ pathtype }}"/>
         {% endfor %}
         {% endif %}
     </FC>
