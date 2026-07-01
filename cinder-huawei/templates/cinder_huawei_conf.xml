@@ -26,6 +26,9 @@
     {% endif %}
     {% if protocol == "fc" %}
     <FC>
+        {% if fc_minonlinefcinitiator > -1 -%}
+        <MinOnlineFCInitiator>{{ fc_minonlinefcinitiator }}</MinOnlineFCInitiator>
+        {% endif %}
         {% if fc_hostname != '' -%}
         {% set hostnames = fc_hostname.split(';') %}
         {% for hostname in hostnames -%}
