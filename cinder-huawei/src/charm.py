@@ -104,6 +104,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             'initiator_name': cfg.get('initiator-name'),
             'target_portgroup': cfg.get('target-portgroup'),
             'fc_hostname': cfg.get('fc-hostname'),
+            'fc_minonlinefcinitiator': cfg.get('fc-minonlinefcinitiator'),
             'alua': cfg.get('alua'),
             'failovermode': cfg.get('failover-mode'),
             'pathtype': cfg.get('path-type')

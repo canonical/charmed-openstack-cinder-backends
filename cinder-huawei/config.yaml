@@ -49,13 +49,13 @@ options:
       Semicolon(;) separated list of storage pools to be used.
   luntype:
     type: string
-    default: Thin 
+    default: Thin
     description: |
-      Type of the LUNs to be created. The value can be Thick or Thin. Dorado series 
+      Type of the LUNs to be created. The value can be Thick or Thin. Dorado series
       only support Thin LUNs.
   default-targetip:
     type: string
-    default: 
+    default:
     description: |
       Default IP address of the iSCSI target that is provided for compute nodes.
   initiator-name:
@@ -75,8 +75,16 @@ options:
     default:
     description: |
       List of FC initiators host names, separated by the semicolons.
-      Use regular expression for every Nova or Cinder node's host names, 
+      Use regular expression for every Nova or Cinder node's host names,
       for example, "cinder-[0-9]" or "compute.*"
+  fc-minonlinefcinitiator:
+    type: int
+    default: 1
+    description: |
+      Configured when the protocol is FC.
+      Minimum number of available FC initiators. The value indicates the number
+      of initiators that must be online to complete volume mounting.
+      Setting it to -1 will remove this configuration entirely
   alua:
     type: int
     default: 1
