@@ -18,10 +18,11 @@
 # import base64
 import os
 import logging
+from xml.sax.saxutils import escape
 
 from ops_openstack.plugins.classes import CinderStoragePluginCharm
 from ops.main import main
-from ops.model import ActiveStatus
+from ops.model import ActiveStatus, BlockedStatus
 from charmhelpers.core.templating import render
 from charmhelpers.core.host import mkdir
 
@@ -84,6 +85,22 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
 
     def on_config(self, event):
         config = dict(self.framework.model.config)
+
+        protocol = config.get('protocol')
+        luntype = config.get('luntype')
+
+        if protocol not in ['iscsi', 'fc']:
+            self.unit.status = BlockedStatus(
+                f"Invalid protocol: {protocol}. Must be 'iscsi' or 'fc'"
+            )
+            return
+
+        if luntype not in ['Thin', 'Thick']:
+            self.unit.status = BlockedStatus(
+                f"Invalid luntype: {luntype}. Must be 'Thin' or 'Thick'"
+            )
+            return
+
         app_name = self.framework.model.app.name
         for relation in self.framework.model.relations.get('storage-backend'):
             self.set_data(relation.data[self.unit], config, app_name)
@@ -94,11 +111,11 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         """Returns a rendered huawer conf file"""
         huaweicontext = {
             'protocol': cfg.get('protocol'),
-            'product': cfg.get('product'),
-            'username': cfg.get('username'),
-            'password': cfg.get('password'),
-            'rest_url': cfg.get('rest-url'),
-            'storage_pool': cfg.get('storage-pool'),
+            'product': escape(str(cfg.get('product') or '')),
+            'username': escape(str(cfg.get('username') or '')),
+            'password': escape(str(cfg.get('password') or '')),
+            'rest_url': escape(str(cfg.get('rest-url') or '')),
+            'storage_pool': escape(str(cfg.get('storage-pool') or '')),
             'luntype': cfg.get('luntype'),
             'default_targetip': cfg.get('default-targetip'),
             'initiator_name': cfg.get('initiator-name'),

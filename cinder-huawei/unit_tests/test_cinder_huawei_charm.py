@@ -1,5 +1,6 @@
 # Copyright 2016 Canonical Ltd
 #
+
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -107,3 +108,93 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             conf['cinder_huawei_conf_file'],
             TEST_XML_PATH
         )
+
+    def test_xml_escaping_special_characters(self):
+        """Verify that special characters in config are escaped for XML."""
+        # Test config with characters that must be escaped in XML
+        test_config = {
+            'username': 'admin&user',
+            'password': 'Pass<word>&&&e',
+            'product': 'Storage<b>',
+            'rest-url': 'https://api.com?query=1&id=2',
+            'storage-pool': 'mystoragepool',
+        }
+
+        context = self.harness.charm.get_huawei_context(test_config)
+        # & becomes &amp; < becomes &lt; > becomes &gt;
+        self.assertEqual(context['username'], 'admin&amp;user')
+        self.assertEqual(
+            context['password'],
+            'Pass&lt;word&gt;&amp;&amp;&amp;e',
+        )
+        self.assertEqual(context['product'], 'Storage&lt;b&gt;')
+        self.assertEqual(
+            context['rest_url'],
+            'https://api.com?query=1&amp;id=2',
+        )
+
+    def test_blocked_on_invalid_protocol(self):
+        """Verify charm blocks when an unsupported protocol is provided."""
+        test_config = {
+            'protocol': 'invalid-protocol',  # Not 'iscsi' or 'fc'
+            'product': 'Dorado',
+            'username': 'myuser',
+            'password': 'mypassword',
+            'storage-pool': 'mystoragepool',
+            'rest-url': 'https://example.com:8088/deviceManager/rest/',
+            'luntype': 'Thin'
+        }
+        self.harness.update_config(test_config)
+
+        self.assertTrue(isinstance(
+            self.harness.model.unit.status,
+            BlockedStatus
+        ))
+        self.assertIn(
+            "Invalid protocol",
+            self.harness.model.unit.status.message
+        )
+
+    def test_blocked_on_invalid_luntype(self):
+        """Verify charm blocks when luntype is not Thin or Thick.
+           Particularly tricky as the storage driver doesn't
+           provide a clear message as it is case sensitive."""
+        test_config = {
+            'protocol': 'iscsi',
+            'product': 'Dorado',
+            'username': 'myuser',
+            'password': 'mypassword',
+            'storage-pool': 'mystoragepool',
+            'rest-url': 'https://example.com:8088/deviceManager/rest/',
+            'luntype': 'thin',  # Lowercase 't' should be invalid
+        }
+        self.harness.update_config(test_config)
+
+        self.assertTrue(isinstance(
+            self.harness.model.unit.status,
+            BlockedStatus
+        ))
+        self.assertIn(
+            "Invalid luntype",
+            self.harness.model.unit.status.message
+        )
+
+    @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
+    def test_active_on_valid_luntype(self, mock_create_huawei_conf):
+        """Verify charm is active when luntype is set to Thin or Thick"""
+        mock_create_huawei_conf.return_value = TEST_XML_PATH
+        test_config = {
+            'protocol': 'iscsi',
+            'product': 'Dorado',
+            'username': 'myuser',
+            'password': 'mypassword',
+            'storage-pool': 'mystoragepool',
+            'rest-url': 'https://example.com:8088/deviceManager/rest/',
+            'volume-backend-name': 'huawei_dorado_iscsi',
+            'luntype': 'Thin',
+        }
+        self.harness.update_config(test_config)
+        self.assertTrue(isinstance(
+            self.harness.model.unit.status,
+            ActiveStatus
+        ))
