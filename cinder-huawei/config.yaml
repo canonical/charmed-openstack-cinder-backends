@@ -53,6 +53,13 @@ options:
     description: |
       Type of the LUNs to be created. The value can be Thick or Thin. Dorado series
       only support Thin LUNs.
+  lun-clone-mode:
+    type: string
+    default: luncopy
+    description: |
+      Method used by the storage array when cloning LUNs. The value can be
+      'fastclone' or 'luncopy'. 'fastclone' is only supported on Dorado V6
+      and later series; other products only support 'luncopy'.
   default-targetip:
     type: string
     default:

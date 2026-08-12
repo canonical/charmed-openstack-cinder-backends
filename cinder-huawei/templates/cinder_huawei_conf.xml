@@ -9,6 +9,7 @@
     </Storage>
     <LUN>
         <LUNType>{{ luntype }}</LUNType>
+        <LUNCloneMode>{{ lun_clone_mode }}</LUNCloneMode>
         <StoragePool>{{ storage_pool }}</StoragePool>
     </LUN>
     {% if protocol == "iscsi" %}
