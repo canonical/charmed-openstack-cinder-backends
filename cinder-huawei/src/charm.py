@@ -146,6 +146,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             'rest_url': escape(str(cfg.get('rest-url') or '')),
             'storage_pool': escape(str(cfg.get('storage-pool') or '')),
             'luntype': cfg.get('luntype'),
+            'lun_clone_mode': cfg.get('lun-clone-mode'),
             'default_targetip': cfg.get('default-targetip'),
             'initiator_name': cfg.get('initiator-name'),
             'target_portgroup': cfg.get('target-portgroup'),
