@@ -45,6 +45,13 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         'storage-pool',
         'rest-url',
     ]
+    HYPERMETRO_MANDATORY_CONFIG = [
+        'hypermetro-username',
+        'hypermetro-password',
+        'hypermetro-domain-name',
+        'hypermetro-rest-url',
+        'hypermetro-storage-pool',
+    ]
 
     # Overriden from the parent. May be set depending on the charm's properties
     stateless = True
@@ -81,6 +88,15 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
                 ('enforce_multipath_for_image_xfer', True)
             ])
 
+        if config.get('hypermetro'):
+            options.extend([
+                ('metro_san_user', config.get('hypermetro-username')),
+                ('metro_san_password', config.get('hypermetro-password')),
+                ('metro_domain_name', config.get('hypermetro-domain-name')),
+                ('metro_san_address', config.get('hypermetro-rest-url')),
+                ('metro_storage_pools', config.get('hypermetro-storage-pool')),
+            ])
+
         return options
 
     def on_config(self, event):
@@ -100,6 +116,19 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
                 f"Invalid luntype: {luntype}. Must be 'Thin' or 'Thick'"
             )
             return
+
+        if config.get('hypermetro'):
+            missing = [
+                key for key in self.HYPERMETRO_MANDATORY_CONFIG
+                if not config.get(key)
+            ]
+            if missing:
+                self.unit.status = BlockedStatus(
+                    "Hypermetro enabled but missing: {}".format(
+                        ', '.join(missing)
+                    )
+                )
+                return
 
         app_name = self.framework.model.app.name
         for relation in self.framework.model.relations.get('storage-backend'):
