@@ -200,66 +200,10 @@ class TestCinderHuaweiCharm(unittest.TestCase):
         ))
 
     @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
-    def test_cinder_configuration_hypermetro_disabled(
-            self, mock_create_huawei_conf):
-        """Verify no metro_* options are set when hypermetro is disabled."""
+    def test_hypermetro_unset(self, mock_create_huawei_conf):
+        """Verify HyperMetro is opt-in: with no metro-* option set the charm
+           is active and emits no metro_* options."""
         mock_create_huawei_conf.return_value = TEST_XML_PATH
-        test_config = {
-            'protocol': 'iscsi',
-            'product': 'Dorado',
-            'username': 'myuser',
-            'password': 'mypassword',
-            'storage-pool': 'mystoragepool',
-            'rest-url': 'https://example.com:8088/deviceManager/rest/',
-            'hypermetro': False,
-        }
-        self.harness.update_config(test_config)
-        conf = dict(self.harness.charm.cinder_configuration(
-            dict(self.harness.model.config)))
-        self.assertNotIn('metro_san_user', conf)
-        self.assertNotIn('metro_san_password', conf)
-        self.assertNotIn('metro_domain_name', conf)
-        self.assertNotIn('metro_san_address', conf)
-        self.assertNotIn('metro_storage_pools', conf)
-
-    @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
-    def test_cinder_configuration_hypermetro_enabled(
-            self, mock_create_huawei_conf):
-        """Verify metro_* options are set when hypermetro is enabled
-           and fully configured."""
-        mock_create_huawei_conf.return_value = TEST_XML_PATH
-        test_config = {
-            'protocol': 'iscsi',
-            'product': 'Dorado',
-            'username': 'myuser',
-            'password': 'mypassword',
-            'storage-pool': 'mystoragepool',
-            'rest-url': 'https://example.com:8088/deviceManager/rest/',
-            'hypermetro': True,
-            'hypermetro-username': 'metrouser',
-            'hypermetro-password': 'metropassword',
-            'hypermetro-domain-name': 'metrodomain',
-            'hypermetro-rest-url':
-                'https://remote.example.com:8088/deviceManager/rest/',
-            'hypermetro-storage-pool': 'remotepool',
-        }
-        self.harness.update_config(test_config)
-        self.assertTrue(isinstance(
-            self.harness.model.unit.status, ActiveStatus))
-        conf = dict(self.harness.charm.cinder_configuration(
-            dict(self.harness.model.config)))
-        self.assertEqual(conf['metro_san_user'], 'metrouser')
-        self.assertEqual(conf['metro_san_password'], 'metropassword')
-        self.assertEqual(conf['metro_domain_name'], 'metrodomain')
-        self.assertEqual(
-            conf['metro_san_address'],
-            'https://remote.example.com:8088/deviceManager/rest/',
-        )
-        self.assertEqual(conf['metro_storage_pools'], 'remotepool')
-
-    def test_blocked_on_hypermetro_missing_config(self):
-        """Verify charm blocks when hypermetro is enabled but some
-           mandatory hypermetro fields are missing."""
         test_config = {
             'protocol': 'iscsi',
             'product': 'Dorado',
@@ -268,11 +212,108 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             'storage-pool': 'mystoragepool',
             'rest-url': 'https://example.com:8088/deviceManager/rest/',
             'luntype': 'Thin',
-            'hypermetro': True,
-            'hypermetro-username': 'metrouser',
-            # hypermetro-password, hypermetro-domain-name,
-            # hypermetro-rest-url and hypermetro-storage-pool
-            # are intentionally left unset.
+        }
+        self.harness.update_config(test_config)
+        self.assertTrue(isinstance(
+            self.harness.model.unit.status,
+            ActiveStatus
+        ))
+        conf = dict(self.harness.charm.cinder_configuration(
+            dict(self.harness.model.config)))
+        for option in ('metro_san_user', 'metro_san_password',
+                       'metro_domain_name', 'metro_san_address',
+                       'metro_storage_pools'):
+            self.assertNotIn(option, conf)
+
+    @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
+    def test_hypermetro_set(self, mock_create_huawei_conf):
+        """Verify all five metro-* options are passed through to
+           cinder.conf when they are all set."""
+        mock_create_huawei_conf.return_value = TEST_XML_PATH
+        test_config = {
+            'protocol': 'fc',
+            'product': 'Dorado',
+            'username': 'myuser',
+            'password': 'mypassword',
+            'storage-pool': 'mystoragepool',
+            'rest-url': 'https://example.com:8088/deviceManager/rest/',
+            'luntype': 'Thin',
+            'fc-hostname': 'compute.*',
+            'metro-san-user': 'metrouser',
+            'metro-san-password': 'metropassword',
+            'metro-domain-name': 'metrodomain',
+            'metro-san-address':
+                'https://remote.example.com:8088/deviceManager/rest/',
+            'metro-storage-pools': 'remotepool',
+        }
+        self.harness.update_config(test_config)
+        self.assertTrue(isinstance(
+            self.harness.model.unit.status,
+            ActiveStatus
+        ))
+        conf = dict(self.harness.charm.cinder_configuration(
+            dict(self.harness.model.config)))
+        self.assertEqual(conf['metro_san_user'], 'metrouser')
+        self.assertEqual(conf['metro_san_password'], 'metropassword')
+        self.assertEqual(conf['metro_domain_name'], 'metrodomain')
+        self.assertEqual(
+            conf['metro_san_address'],
+            'https://remote.example.com:8088/deviceManager/rest/')
+        self.assertEqual(conf['metro_storage_pools'], 'remotepool')
+
+    @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
+    def test_blocked_on_partial_hypermetro(self, mock_create_huawei_conf):
+        """Verify a partial metro-* configuration blocks, names the missing
+           options, and is not published to the principal charm."""
+        mock_create_huawei_conf.return_value = TEST_XML_PATH
+        test_config = {
+            'protocol': 'iscsi',
+            'product': 'Dorado',
+            'username': 'myuser',
+            'password': 'mypassword',
+            'storage-pool': 'mystoragepool',
+            'rest-url': 'https://example.com:8088/deviceManager/rest/',
+            'luntype': 'Thin',
+            'metro-san-user': 'metrouser',
+        }
+        self.harness.update_config(test_config)
+
+        self.assertTrue(isinstance(
+            self.harness.model.unit.status,
+            BlockedStatus
+        ))
+        message = self.harness.model.unit.status.message
+        self.assertIn('HyperMetro partially configured', message)
+        for option in ('metro-san-password', 'metro-domain-name',
+                       'metro-san-address', 'metro-storage-pools'):
+            self.assertIn(option, message)
+
+        relation = self.harness.model.get_relation('storage-backend')
+        relation_data = self.harness.get_relation_data(
+            relation.id, self.harness.model.unit.name)
+        self.assertNotIn('subordinate_configuration', relation_data)
+
+    @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
+    def test_blocked_on_multiple_metro_storage_pools(
+            self, mock_create_huawei_conf):
+        """Verify charm blocks when metro-storage-pools is given a
+           semicolon(;) separated list: unlike storage-pool the driver
+           compares it for exact equality against a single remote pool."""
+        mock_create_huawei_conf.return_value = TEST_XML_PATH
+        test_config = {
+            'protocol': 'iscsi',
+            'product': 'Dorado',
+            'username': 'myuser',
+            'password': 'mypassword',
+            'storage-pool': 'mystoragepool',
+            'rest-url': 'https://example.com:8088/deviceManager/rest/',
+            'luntype': 'Thin',
+            'metro-san-user': 'metrouser',
+            'metro-san-password': 'metropassword',
+            'metro-domain-name': 'metrodomain',
+            'metro-san-address':
+                'https://remote.example.com:8088/deviceManager/rest/',
+            'metro-storage-pools': 'pool1;pool2',
         }
         self.harness.update_config(test_config)
 
@@ -281,10 +322,5 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             BlockedStatus
         ))
         self.assertIn(
-            "Hypermetro enabled but missing",
-            self.harness.model.unit.status.message
-        )
-        self.assertIn(
-            "hypermetro-password",
-            self.harness.model.unit.status.message
-        )
+            'metro-storage-pools only supports a single pool name',
+            self.harness.model.unit.status.message)

@@ -116,48 +116,34 @@ options:
         This parameter needs to be delivered only when third-party multipathing software is used.
         0: optimized path
         1: non-optimized path
-  hypermetro:
-    type: boolean
-    default: False
-    description: |
-      Enable HyperMetro support for this backend. When enabled, the
-      backend will log in to a remote (metro) Huawei array so that
-      volumes belonging to a Cinder volume type with the extra-spec
-      "hypermetro=<is> True" can be created as HyperMetro pairs
-      across both arrays for redundancy. When enabled, hypermetro-username,
-      hypermetro-password, hypermetro-domain-name, hypermetro-rest-url and
-      hypermetro-storage-pool are all mandatory.
-  hypermetro-username:
+  metro-san-user:
     type: string
     default:
     description: |
-      User name of a storage administrator on the remote (metro) array.
-      Mandatory when hypermetro is enabled.
-  hypermetro-password:
+      User name of a storage administrator on the remote (HyperMetro)
+      array.
+  metro-san-password:
     type: string
     default:
     description: |
-      Password of a storage administrator on the remote (metro) array.
-      Mandatory when hypermetro is enabled.
-  hypermetro-domain-name:
+      Password of a storage administrator on the remote (HyperMetro)
+      array.
+  metro-domain-name:
     type: string
     default:
     description: |
-      HyperMetro domain name, as configured on the storage arrays
-      (e.g. via DeviceManager/ISM). This domain must already exist and
-      pair the local and remote arrays before it can be used here.
-      Mandatory when hypermetro is enabled.
-  hypermetro-rest-url:
+      HyperMetro domain name, as configured on the storage arrays (e.g.
+      via DeviceManager/ISM). The domain must already exist and pair the
+      local and remote arrays; the charm does not create it.
+  metro-san-address:
     type: string
     default:
     description: |
       Semicolon(;) separated list of the REST interface of the remote
-      (metro) array. e.g.,
+      (HyperMetro) array. e.g.,
       https://my-remote-endpoint.example.com:8088/deviceManager/rest/
-      Mandatory when hypermetro is enabled.
-  hypermetro-storage-pool:
+  metro-storage-pools:
     type: string
     default:
     description: |
-      Semicolon(;) separated list of storage pools to be used on the
-      remote (metro) array. Mandatory when hypermetro is enabled.
+      Name of the storage pools on the remote (HyperMetro) array.
