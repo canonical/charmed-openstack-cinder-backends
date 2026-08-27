@@ -46,6 +46,14 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         'rest-url',
     ]
 
+    HYPERMETRO_CONFIG_MAP = {
+        'metro_san_user': 'metro-san-user',
+        'metro_san_password': 'metro-san-password',
+        'metro_domain_name': 'metro-domain-name',
+        'metro_san_address': 'metro-san-address',
+        'metro_storage_pool': 'metro-storage-pool',
+    }
+
     # Overriden from the parent. May be set depending on the charm's properties
     stateless = True
     active_active = False
@@ -81,6 +89,11 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
                 ('enforce_multipath_for_image_xfer', True)
             ])
 
+        for cinder_opt, charm_opt in self.HYPERMETRO_CONFIG_MAP.items():
+            value = config.get(charm_opt)
+            if value:
+                options.append((cinder_opt, value))
+
         return options
 
     def on_config(self, event):
@@ -101,11 +114,41 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             )
             return
 
+        hypermetro_error = self.check_hypermetro(config)
+        if hypermetro_error:
+            self.unit.status = BlockedStatus(hypermetro_error)
+            return
+
         app_name = self.framework.model.app.name
         for relation in self.framework.model.relations.get('storage-backend'):
             self.set_data(relation.data[self.unit], config, app_name)
         self._stored.is_started = True
         self.unit.status = ActiveStatus('Unit is ready')
+
+    def check_hypermetro(self, config):
+        """Return an error message if the HyperMetro config is unusable.
+        """
+        options = self.HYPERMETRO_CONFIG_MAP.values()
+        missing = sorted(opt for opt in options if not config.get(opt))
+
+        if len(missing) == len(self.HYPERMETRO_CONFIG_MAP):
+            return None
+
+        if missing:
+            return (
+                'HyperMetro partially configured, missing: {}. Set all of '
+                'the metro-* options, or none to disable HyperMetro.'.format(
+                    ', '.join(missing))
+            )
+
+        if ';' in config['metro-storage-pool']:
+            return (
+                'metro-storage-pool only supports a single pool name '
+                '(unlike storage-pool, it cannot be a semicolon(;) '
+                'separated list)'
+            )
+
+        return None
 
     def get_huawei_context(self, cfg):
         """Returns a rendered huawer conf file"""

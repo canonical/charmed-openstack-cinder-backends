@@ -17,3 +17,4 @@ Configuration
 =============
 
 See config.yaml for details of configuration options.
+
