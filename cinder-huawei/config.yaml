@@ -134,7 +134,7 @@ options:
     type: string
     default:
     description: |
-      Only required if protocol is FC. HyperMetro domain name, as configured on the storage arrays (e.g.
+      Only required if the protocol is FC. HyperMetro domain name, as configured on the storage arrays (e.g.
       via DeviceManager/ISM). The domain must already exist and be paired with the
       local and remote arrays; the charm does not create it.
       Must be used together with all metro-* options.
@@ -142,7 +142,7 @@ options:
     type: string
     default:
     description: |
-      Only required if protocol is FC. Semicolon(;) separated list of the REST interfaces of the remote
+      Only required if the protocol is FC. Semicolon(;) separated list of the REST interfaces of the remote
       (HyperMetro) array. e.g.,
       https://my-remote-endpoint.example.com:8088/deviceManager/rest/
       Must be used together with all metro-* options.
@@ -150,5 +150,5 @@ options:
     type: string
     default:
     description: |
-      Only required if protocol is FC. Name of the storage pool on the remote (HyperMetro) array.
+      Only required if the protocol is FC. Name of the storage pool on the remote (HyperMetro) array.
       Must be used together with all metro-* options.
