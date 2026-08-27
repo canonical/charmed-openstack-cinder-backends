@@ -120,13 +120,13 @@ options:
     type: string
     default:
     description: |
-      Only required if protocol is FC. User name of a storage administrator on the remote (HyperMetro)
+      Only required if the protocol is FC. User name of a storage administrator on the remote (HyperMetro).
       array.
   metro-san-password:
     type: string
     default:
     description: |
-      Only required if protocol is FC. Password of a storage administrator on the remote (HyperMetro)
+      Only required if the protocol is FC. Password of the storage administrator specified by metro-user-name on the remote (HyperMetro).
       array.
   metro-domain-name:
     type: string
@@ -142,8 +142,8 @@ options:
       Only required if protocol is FC. Semicolon(;) separated list of the REST interface of the remote
       (HyperMetro) array. e.g.,
       https://my-remote-endpoint.example.com:8088/deviceManager/rest/
-  metro-storage-pools:
+  metro-storage-pool:
     type: string
     default:
     description: |
-      Only required if protocol is FC. Name of the storage pools on the remote (HyperMetro) array.
+      Only required if protocol is FC. Name of the storage pool on the remote (HyperMetro) array.
