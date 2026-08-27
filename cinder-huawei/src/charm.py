@@ -51,7 +51,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         'metro_san_password': 'metro-san-password',
         'metro_domain_name': 'metro-domain-name',
         'metro_san_address': 'metro-san-address',
-        'metro_storage_pools': 'metro-storage-pools',
+        'metro_storage_pool': 'metro-storage-pool',
     }
 
     # Overriden from the parent. May be set depending on the charm's properties
@@ -141,9 +141,9 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
                     ', '.join(missing))
             )
 
-        if ';' in config['metro-storage-pools']:
+        if ';' in config['metro-storage-pool']:
             return (
-                'metro-storage-pools only supports a single pool name '
+                'metro-storage-pool only supports a single pool name '
                 '(unlike storage-pool, it cannot be a semicolon(;) '
                 'separated list)'
             )

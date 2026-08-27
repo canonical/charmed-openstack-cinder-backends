@@ -222,7 +222,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             dict(self.harness.model.config)))
         for option in ('metro_san_user', 'metro_san_password',
                        'metro_domain_name', 'metro_san_address',
-                       'metro_storage_pools'):
+                       'metro_storage_pool'):
             self.assertNotIn(option, conf)
 
     @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
@@ -244,7 +244,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             'metro-domain-name': 'metrodomain',
             'metro-san-address':
                 'https://remote.example.com:8088/deviceManager/rest/',
-            'metro-storage-pools': 'remotepool',
+            'metro-storage-pool': 'remotepool',
         }
         self.harness.update_config(test_config)
         self.assertTrue(isinstance(
@@ -259,7 +259,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
         self.assertEqual(
             conf['metro_san_address'],
             'https://remote.example.com:8088/deviceManager/rest/')
-        self.assertEqual(conf['metro_storage_pools'], 'remotepool')
+        self.assertEqual(conf['metro_storage_pool'], 'remotepool')
 
     @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
     def test_blocked_on_partial_hypermetro(self, mock_create_huawei_conf):
@@ -285,7 +285,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
         message = self.harness.model.unit.status.message
         self.assertIn('HyperMetro partially configured', message)
         for option in ('metro-san-password', 'metro-domain-name',
-                       'metro-san-address', 'metro-storage-pools'):
+                       'metro-san-address', 'metro-storage-pool'):
             self.assertIn(option, message)
 
         relation = self.harness.model.get_relation('storage-backend')
@@ -294,9 +294,9 @@ class TestCinderHuaweiCharm(unittest.TestCase):
         self.assertNotIn('subordinate_configuration', relation_data)
 
     @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
-    def test_blocked_on_multiple_metro_storage_pools(
+    def test_blocked_on_multiple_metro_storage_pool(
             self, mock_create_huawei_conf):
-        """Verify charm blocks when metro-storage-pools is given a
+        """Verify charm blocks when metro-storage-pool is given a
            semicolon(;) separated list: unlike storage-pool the driver
            compares it for exact equality against a single remote pool."""
         mock_create_huawei_conf.return_value = TEST_XML_PATH
@@ -313,7 +313,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             'metro-domain-name': 'metrodomain',
             'metro-san-address':
                 'https://remote.example.com:8088/deviceManager/rest/',
-            'metro-storage-pools': 'pool1;pool2',
+            'metro-storage-pool': 'pool1;pool2',
         }
         self.harness.update_config(test_config)
 
@@ -322,5 +322,5 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             BlockedStatus
         ))
         self.assertIn(
-            'metro-storage-pools only supports a single pool name',
+            'metro-storage-pool only supports a single pool name',
             self.harness.model.unit.status.message)
