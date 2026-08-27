@@ -122,12 +122,14 @@ options:
     description: |
       Only required if the protocol is FC. User name of a storage administrator on the remote (HyperMetro).
       array.
+      Must be used together with all metro-* options.
   metro-san-password:
     type: string
     default:
     description: |
       Only required if the protocol is FC. Password of the storage administrator specified by metro-user-name on the remote (HyperMetro).
       array.
+      Must be used together with all metro-* options.
   metro-domain-name:
     type: string
     default:
@@ -135,6 +137,7 @@ options:
       Only required if protocol is FC. HyperMetro domain name, as configured on the storage arrays (e.g.
       via DeviceManager/ISM). The domain must already exist and pair the
       local and remote arrays; the charm does not create it.
+      Must be used together with all metro-* options.
   metro-san-address:
     type: string
     default:
@@ -142,8 +145,10 @@ options:
       Only required if protocol is FC. Semicolon(;) separated list of the REST interface of the remote
       (HyperMetro) array. e.g.,
       https://my-remote-endpoint.example.com:8088/deviceManager/rest/
+      Must be used together with all metro-* options.
   metro-storage-pool:
     type: string
     default:
     description: |
       Only required if protocol is FC. Name of the storage pool on the remote (HyperMetro) array.
+      Must be used together with all metro-* options.
