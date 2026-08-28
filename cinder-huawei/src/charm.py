@@ -51,7 +51,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         'metro_san_password': 'metro-san-password',
         'metro_domain_name': 'metro-domain-name',
         'metro_san_address': 'metro-san-address',
-        'metro_storage_pool': 'metro-storage-pool',
+        'metro_storage_pools': 'metro-storage-pool',
     }
 
     # Overriden from the parent. May be set depending on the charm's properties
