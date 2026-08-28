@@ -46,6 +46,13 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         'rest-url',
     ]
 
+    """
+    The HyperMetro configuration options below are directly rendered
+    to the /etc/cinder/cinder.conf file under each backend configuration.
+    Though the remote accepts one storage pool, the documentation specifies
+    this configuration option as a plural.
+    https://docs.openstack.org/cinder/2024.1/configuration/block-storage/drivers/huawei-storage-driver.html#configuration-file-parameters
+    """
     HYPERMETRO_CONFIG_MAP = {
         'metro_san_user': 'metro-san-user',
         'metro_san_password': 'metro-san-password',
