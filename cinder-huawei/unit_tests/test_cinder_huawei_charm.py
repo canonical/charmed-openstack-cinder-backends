@@ -222,7 +222,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
             dict(self.harness.model.config)))
         for option in ('metro_san_user', 'metro_san_password',
                        'metro_domain_name', 'metro_san_address',
-                       'metro_storage_pool'):
+                       'metro_storage_pools'):
             self.assertNotIn(option, conf)
 
     @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
@@ -259,7 +259,7 @@ class TestCinderHuaweiCharm(unittest.TestCase):
         self.assertEqual(
             conf['metro_san_address'],
             'https://remote.example.com:8088/deviceManager/rest/')
-        self.assertEqual(conf['metro_storage_pool'], 'remotepool')
+        self.assertEqual(conf['metro_storage_pools'], 'remotepool')
 
     @patch.object(CinderHuaweiCharm, 'create_huawei_conf')
     def test_blocked_on_partial_hypermetro(self, mock_create_huawei_conf):
