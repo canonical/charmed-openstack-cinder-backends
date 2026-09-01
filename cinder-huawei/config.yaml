@@ -72,11 +72,6 @@ options:
     description: |
       Sync speed for the HyperMetro active-active array pair.
       (1 = Low, 2 = Medium (default), 3 = High, 4 = Highest).
-      Note that the in-tree Huawei driver shipped in cinder-common does not
-      read this setting: it creates HyperMetro pairs at Medium regardless,
-      and the sync speed must be adjusted on the arrays themselves. The
-      option is rendered for forward compatibility with drivers that do
-      support it.
   default-targetip:
     type: string
     default:
