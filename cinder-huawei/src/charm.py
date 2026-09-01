@@ -121,6 +121,16 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             )
             return
 
+        # The driver validates these against ('1', '2', '3', '4') and raises
+        # InvalidInput on anything else, which stops the backend starting.
+        for option in ['lun-copy-speed', 'hyper-sync-speed']:
+            speed = config.get(option)
+            if speed not in [1, 2, 3, 4]:
+                self.unit.status = BlockedStatus(
+                    f"Invalid {option}: {speed}. Must be 1, 2, 3 or 4"
+                )
+                return
+
         hypermetro_error = self.check_hypermetro(config)
         if hypermetro_error:
             self.unit.status = BlockedStatus(hypermetro_error)
@@ -168,6 +178,8 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             'storage_pool': escape(str(cfg.get('storage-pool') or '')),
             'luntype': cfg.get('luntype'),
             'lun_clone_mode': cfg.get('lun-clone-mode'),
+            'lun_copy_speed': cfg.get('lun-copy-speed'),
+            'hyper_sync_speed': cfg.get('hyper-sync-speed'),
             'default_targetip': cfg.get('default-targetip'),
             'initiator_name': cfg.get('initiator-name'),
             'target_portgroup': cfg.get('target-portgroup'),
