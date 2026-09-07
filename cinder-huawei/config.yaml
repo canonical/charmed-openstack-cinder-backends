@@ -60,6 +60,12 @@ options:
       Method used by the storage array when cloning LUNs. The value can be
       'fastclone' or 'luncopy'. 'fastclone' is only supported on Dorado V6
       and later series; other products only support 'luncopy'.
+  lun-copy-speed:
+    type: int
+    default: 2
+    description: |
+      Speed used by the storage array for local LUN clones and background
+      splits. (1 = Low, 2 = Medium (default), 3 = High, 4 = Highest).
   default-targetip:
     type: string
     default:

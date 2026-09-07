@@ -10,6 +10,7 @@
     <LUN>
         <LUNType>{{ luntype }}</LUNType>
         <LUNCloneMode>{{ lun_clone_mode }}</LUNCloneMode>
+        <LUNCopySpeed>{{ lun_copy_speed }}</LUNCopySpeed>
         <StoragePool>{{ storage_pool }}</StoragePool>
     </LUN>
     {% if protocol == "iscsi" %}

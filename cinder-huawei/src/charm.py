@@ -108,6 +108,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
 
         protocol = config.get('protocol')
         luntype = config.get('luntype')
+        copy_speed = config.get('lun-copy-speed')
 
         if protocol not in ['iscsi', 'fc']:
             self.unit.status = BlockedStatus(
@@ -118,6 +119,14 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
         if luntype not in ['Thin', 'Thick']:
             self.unit.status = BlockedStatus(
                 f"Invalid luntype: {luntype}. Must be 'Thin' or 'Thick'"
+            )
+            return
+
+        # The driver validates these against ('1', '2', '3', '4') and raises
+        # InvalidInput on anything else, which stops the backend starting.
+        if copy_speed not in [1, 2, 3, 4]:
+            self.unit.status = BlockedStatus(
+                f"Invalid lun-copy-speed: {copy_speed}. Must be 1, 2, 3 or 4"
             )
             return
 
@@ -168,6 +177,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             'storage_pool': escape(str(cfg.get('storage-pool') or '')),
             'luntype': cfg.get('luntype'),
             'lun_clone_mode': cfg.get('lun-clone-mode'),
+            'lun_copy_speed': cfg.get('lun-copy-speed'),
             'default_targetip': cfg.get('default-targetip'),
             'initiator_name': cfg.get('initiator-name'),
             'target_portgroup': cfg.get('target-portgroup'),
