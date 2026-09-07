@@ -66,12 +66,6 @@ options:
     description: |
       Speed used by the storage array for local LUN clones and background
       splits. (1 = Low, 2 = Medium (default), 3 = High, 4 = Highest).
-  hyper-sync-speed:
-    type: int
-    default: 2
-    description: |
-      Sync speed for the HyperMetro active-active array pair.
-      (1 = Low, 2 = Medium (default), 3 = High, 4 = Highest).
   default-targetip:
     type: string
     default:

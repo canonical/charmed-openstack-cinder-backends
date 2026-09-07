@@ -108,6 +108,7 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
 
         protocol = config.get('protocol')
         luntype = config.get('luntype')
+        copy_speed = config.get('lun-copy-speed')
 
         if protocol not in ['iscsi', 'fc']:
             self.unit.status = BlockedStatus(
@@ -123,13 +124,11 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
 
         # The driver validates these against ('1', '2', '3', '4') and raises
         # InvalidInput on anything else, which stops the backend starting.
-        for option in ['lun-copy-speed', 'hyper-sync-speed']:
-            speed = config.get(option)
-            if speed not in [1, 2, 3, 4]:
-                self.unit.status = BlockedStatus(
-                    f"Invalid {option}: {speed}. Must be 1, 2, 3 or 4"
-                )
-                return
+        if copy_speed not in [1, 2, 3, 4]:
+            self.unit.status = BlockedStatus(
+                f"Invalid lun-copy-speed: {copy_speed}. Must be 1, 2, 3 or 4"
+            )
+            return
 
         hypermetro_error = self.check_hypermetro(config)
         if hypermetro_error:
@@ -179,7 +178,6 @@ class CinderHuaweiCharm(CinderStoragePluginCharm):
             'luntype': cfg.get('luntype'),
             'lun_clone_mode': cfg.get('lun-clone-mode'),
             'lun_copy_speed': cfg.get('lun-copy-speed'),
-            'hyper_sync_speed': cfg.get('hyper-sync-speed'),
             'default_targetip': cfg.get('default-targetip'),
             'initiator_name': cfg.get('initiator-name'),
             'target_portgroup': cfg.get('target-portgroup'),
