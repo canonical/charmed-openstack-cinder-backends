@@ -1,0 +1,9 @@
+charm_name: cinder-huawei-oem
+tests:
+  - tests.tests.CinderHuaweiTest
+configure:
+  - zaza.openstack.charm_tests.keystone.setup.add_demo_user
+gate_bundles:
+  - jammy-caracal
+smoke_bundles:
+  - jammy-caracal
